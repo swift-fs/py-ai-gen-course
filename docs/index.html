@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python AI 课程</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/toml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg-deep: #0a0e17;
+        --bg-surface: #111827;
+        --bg-card: #1a2234;
+        --bg-card-hover: #1f2a3e;
+        --border: #2a3548;
+        --border-active: #f97316;
+        --text-primary: #e8ecf4;
+        --text-secondary: #8b99b0;
+        --text-muted: #5c6b82;
+        --accent: #f97316;
+        --accent-soft: rgba(249, 115, 22, 0.12);
+        --accent-glow: rgba(249, 115, 22, 0.3);
+        --green: #22c55e;
+        --green-soft: rgba(34, 197, 94, 0.12);
+        --blue: #3b82f6;
+        --blue-soft: rgba(59, 130, 246, 0.12);
+        --purple: #a855f7;
+        --purple-soft: rgba(168, 85, 247, 0.12);
+        --sidebar-w: 320px;
+        --font-sans: "Noto Sans SC", system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+      }
+
+      html {
+        font-size: 15px;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-sans);
+        background: var(--bg-deep);
+        color: var(--text-primary);
+        line-height: 1.7;
+        overflow: hidden;
+        height: 100vh;
+      }
+
+      .app {
+        display: flex;
+        height: 100vh;
+      }
+
+      /* ===================== SIDEBAR ===================== */
+      .sidebar {
+        width: var(--sidebar-w);
+        min-width: var(--sidebar-w);
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        position: relative;
+        z-index: 10;
+      }
+
+      .sidebar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 1px;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          var(--accent) 0%,
+          transparent 40%,
+          transparent 60%,
+          var(--accent) 100%
+        );
+        opacity: 0.2;
+      }
+
+      .sidebar-header {
+        padding: 28px 24px 20px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+
+      .sidebar-logo .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--accent), #fb923c);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 18px;
+        color: #fff;
+        letter-spacing: -1px;
+        flex-shrink: 0;
+      }
+
+      .sidebar-logo h1 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        color: var(--text-primary);
+      }
+
+      .sidebar-logo h1 span {
+        color: var(--accent);
+      }
+
+      .sidebar-subtitle {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-left: 52px;
+        margin-top: -2px;
+      }
+
+      .sidebar-nav {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px 12px 24px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      .sidebar-nav::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar-nav::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .sidebar-nav::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      .nav-section {
+        margin-bottom: 8px;
+      }
+
+      .nav-section-title {
+        font-size: 0.68rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--text-muted);
+        padding: 12px 12px 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .nav-section-title .section-badge {
+        font-size: 0.6rem;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-weight: 600;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .badge-basics {
+        background: var(--green-soft);
+        color: var(--green);
+      }
+      .badge-advanced {
+        background: var(--blue-soft);
+        color: var(--blue);
+      }
+      .badge-practice {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+      .badge-tools {
+        background: var(--purple-soft);
+        color: var(--purple);
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        font-size: 0.87rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        position: relative;
+        user-select: none;
+      }
+
+      .nav-item:hover {
+        background: var(--bg-card);
+        color: var(--text-primary);
+      }
+
+      .nav-item.active {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 60%;
+        background: var(--accent);
+        border-radius: 0 3px 3px 0;
+      }
+
+      .nav-item .nav-num {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 500;
+        width: 22px;
+        text-align: right;
+        color: var(--text-muted);
+        flex-shrink: 0;
+      }
+
+      .nav-item.active .nav-num {
+        color: var(--accent);
+      }
+
+      .nav-item .nav-label {
+        flex: 1;
+      }
+
+      .nav-group-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        font-size: 0.87rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background 0.15s;
+        user-select: none;
+      }
+
+      .nav-group-header:hover {
+        background: var(--bg-card);
+      }
+
+      .nav-group-header .group-arrow {
+        transition: transform 0.2s;
+        font-size: 0.6rem;
+        color: var(--text-muted);
+      }
+
+      .nav-group-header.collapsed .group-arrow {
+        transform: rotate(-90deg);
+      }
+
+      .nav-group-items {
+        overflow: hidden;
+      }
+
+      .nav-group-items.collapsed {
+        display: none;
+      }
+
+      /* ===================== MAIN CONTENT ===================== */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .topbar {
+        height: 52px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 32px;
+        gap: 12px;
+        flex-shrink: 0;
+        background: var(--bg-surface);
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+
+      .breadcrumb .sep {
+        opacity: 0.4;
+      }
+
+      .breadcrumb .current {
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      .topbar-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+      }
+
+      .topbar-btn {
+        padding: 5px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text-secondary);
+        font-size: 0.78rem;
+        font-family: var(--font-sans);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .topbar-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 40px 48px 80px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      .content-area::-webkit-scrollbar {
+        width: 6px;
+      }
+      .content-area::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .content-area::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      /* ===================== MARKDOWN STYLES ===================== */
+      .md-content {
+        max-width: 820px;
+      }
+
+      .md-content h1 {
+        font-size: 2.2rem;
+        font-weight: 900;
+        letter-spacing: -1px;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, var(--text-primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .md-content h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 48px;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+        letter-spacing: -0.5px;
+      }
+
+      .md-content h3 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-top: 32px;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+      }
+
+      .md-content p {
+        margin-bottom: 16px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+      }
+
+      .md-content strong {
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+
+      .md-content a {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.15s;
+      }
+
+      .md-content a:hover {
+        border-bottom-color: var(--accent);
+      }
+
+      .md-content ul,
+      .md-content ol {
+        margin-bottom: 16px;
+        padding-left: 24px;
+        color: var(--text-secondary);
+      }
+
+      .md-content li {
+        margin-bottom: 6px;
+        line-height: 1.7;
+      }
+
+      .md-content code {
+        font-family: var(--font-mono);
+        font-size: 0.85em;
+        background: var(--bg-card);
+        padding: 2px 7px;
+        border-radius: 4px;
+        color: var(--accent);
+        border: 1px solid var(--border);
+      }
+
+      .md-content pre {
+        margin-bottom: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        position: relative;
+      }
+
+      .md-content pre code {
+        display: block;
+        padding: 20px 24px;
+        background: var(--bg-card) !important;
+        font-size: 0.85rem;
+        line-height: 1.65;
+        overflow-x: auto;
+        border: none;
+        color: var(--text-primary) !important;
+      }
+
+      .md-content blockquote {
+        border-left: 3px solid var(--accent);
+        background: var(--accent-soft);
+        padding: 12px 20px;
+        margin-bottom: 16px;
+        border-radius: 0 8px 8px 0;
+        color: var(--text-secondary);
+      }
+
+      .md-content blockquote p {
+        margin-bottom: 0;
+      }
+
+      .md-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+      }
+
+      .md-content th {
+        background: var(--bg-card);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+      }
+
+      .md-content td {
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+      }
+
+      .md-content tr:hover td {
+        background: var(--bg-card);
+      }
+
+      .md-content hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 32px 0;
+      }
+
+      .md-content img {
+        max-width: 100%;
+        border-radius: 8px;
+      }
+
+      /* ===================== WELCOME PAGE ===================== */
+      .welcome {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 70vh;
+        text-align: center;
+      }
+
+      .welcome-hero {
+        margin-bottom: 48px;
+      }
+
+      .welcome-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--accent), #fb923c);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 24px;
+        box-shadow: 0 0 60px var(--accent-glow);
+      }
+
+      .welcome h1 {
+        font-size: 2.8rem;
+        font-weight: 900;
+        letter-spacing: -2px;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, var(--text-primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .welcome p {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      .welcome-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        max-width: 640px;
+        width: 100%;
+      }
+
+      .welcome-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+      }
+
+      .welcome-card:hover {
+        border-color: var(--accent);
+        background: var(--bg-card-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      .welcome-card .card-badge {
+        font-size: 0.68rem;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 8px;
+      }
+
+      .welcome-card h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: var(--text-primary);
+      }
+
+      .welcome-card p {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin: 0;
+      }
+
+      /* ===================== NAVIGATION FOOTER ===================== */
+      .nav-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 48px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+      }
+
+      .nav-footer-btn {
+        flex: 1;
+        padding: 16px 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+
+      .nav-footer-btn:hover {
+        border-color: var(--accent);
+        background: var(--bg-card-hover);
+      }
+
+      .nav-footer-btn .label {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+      }
+
+      .nav-footer-btn .title {
+        font-size: 0.9rem;
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      .nav-footer-btn.next {
+        text-align: right;
+      }
+
+      /* ===================== LOADING ===================== */
+      .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px;
+        color: var(--text-muted);
+        gap: 12px;
+      }
+
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ===================== ERROR ===================== */
+      .error-state {
+        text-align: center;
+        padding: 60px;
+        color: var(--text-muted);
+      }
+
+      .error-state .error-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      /* ===================== RESPONSIVE ===================== */
+      @media (max-width: 900px) {
+        .sidebar {
+          width: 260px;
+          min-width: 260px;
+        }
+        .content-area {
+          padding: 24px;
+        }
+        .welcome-cards {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <div class="logo-icon">Py</div>
+            <h1>Python <span>AI</span></h1>
+          </div>
+          <div class="sidebar-subtitle">从零基础到实战的完整学习路径</div>
+        </div>
+        <nav class="sidebar-nav" id="sidebarNav"></nav>
+      </aside>
+      <main class="main">
+        <div class="topbar">
+          <div class="breadcrumb" id="breadcrumb">
+            <span>Python AI 课程</span>
+          </div>
+          <div class="topbar-actions">
+            <button class="topbar-btn" onclick="toggleSidebar()">
+              ☰ 菜单
+            </button>
+          </div>
+        </div>
+        <div class="content-area">
+          <div id="content" class="md-content"></div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // ===================== COURSE DATA =====================
+      const COURSE = [
+        {
+          id: "basics",
+          title: "入门篇",
+          badge: "基础",
+          badgeClass: "badge-basics",
+          basePath: "01-python-basics",
+          children: [
+            {
+              id: "env",
+              num: "00",
+              title: "环境搭建",
+              path: "00-environment-setup/README.md",
+            },
+            {
+              id: "vars",
+              num: "01",
+              title: "变量与数据类型",
+              path: "01-variables-and-types/README.md",
+            },
+            {
+              id: "ops",
+              num: "02",
+              title: "运算符与表达式",
+              path: "02-operators/README.md",
+            },
+            {
+              id: "str",
+              num: "03",
+              title: "字符串详解",
+              path: "03-strings/README.md",
+            },
+            {
+              id: "ds",
+              num: "04",
+              title: "数据结构",
+              path: "04-data-structures/README.md",
+            },
+            {
+              id: "flow",
+              num: "05",
+              title: "控制流",
+              path: "05-control-flow/README.md",
+            },
+            {
+              id: "func",
+              num: "06",
+              title: "函数",
+              path: "06-functions/README.md",
+            },
+            {
+              id: "mod",
+              num: "07",
+              title: "模块与包",
+              path: "07-modules-and-packages/README.md",
+            },
+            {
+              id: "fileio",
+              num: "08",
+              title: "文件 I/O",
+              path: "08-file-io/README.md",
+            },
+          ],
+        },
+        {
+          id: "advanced",
+          title: "进阶篇",
+          badge: "进阶",
+          badgeClass: "badge-advanced",
+          basePath: "02-python-advanced",
+          children: [
+            {
+              id: "oop",
+              num: "09",
+              title: "面向对象编程",
+              path: "09-oop/README.md",
+            },
+            {
+              id: "err",
+              num: "10",
+              title: "错误处理与调试",
+              path: "10-error-handling/README.md",
+            },
+            {
+              id: "deco",
+              num: "11",
+              title: "装饰器",
+              path: "11-decorators/README.md",
+            },
+            {
+              id: "gen",
+              num: "12",
+              title: "生成器与迭代器",
+              path: "12-generators/README.md",
+            },
+            {
+              id: "types",
+              num: "13",
+              title: "类型注解",
+              path: "13-type-annotations/README.md",
+            },
+            {
+              id: "async",
+              num: "14",
+              title: "异步编程",
+              path: "14-async/README.md",
+            },
+            {
+              id: "stdlib",
+              num: "15",
+              title: "标准库深入",
+              path: "15-stdlib-deep-dive/README.md",
+            },
+            {
+              id: "patterns",
+              num: "16",
+              title: "设计模式",
+              path: "16-design-patterns/README.md",
+            },
+            {
+              id: "testing",
+              num: "17",
+              title: "测试",
+              path: "17-testing/README.md",
+            },
+          ],
+        },
+        {
+          id: "practice",
+          title: "实战篇",
+          badge: "实战",
+          badgeClass: "badge-practice",
+          basePath: "03-python-practice",
+          children: [
+            {
+              id: "struct",
+              num: "18",
+              title: "项目结构与 uv",
+              path: "18-project-structure/README.md",
+            },
+            {
+              id: "todo",
+              num: "19",
+              title: "实战：CLI 待办应用",
+              path: "19-todo-cli/README.md",
+            },
+            {
+              id: "webapi",
+              num: "20",
+              title: "实战：Web API",
+              path: "20-web-api/README.md",
+            },
+            {
+              id: "quality",
+              num: "21",
+              title: "代码质量",
+              path: "21-code-quality/README.md",
+            },
+          ],
+        },
+      ];
+
+      // Build flat navigation list for prev/next
+      const FLAT_NAV = [];
+      COURSE.forEach((section) => {
+        section.children.forEach((child) => {
+          FLAT_NAV.push({
+            ...child,
+            sectionId: section.id,
+            sectionTitle: section.title,
+            fullPath: section.basePath + "/" + child.path,
+          });
+        });
+      });
+
+      // ===================== STATE =====================
+      let currentPath = null;
+
+      // ===================== MARKED CONFIG =====================
+      marked.setOptions({
+        highlight: function (code, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            return hljs.highlight(code, { language: lang }).value;
+          }
+          return hljs.highlightAuto(code).value;
+        },
+        breaks: true,
+        gfm: true,
+      });
+
+      // ===================== RENDER SIDEBAR =====================
+      function renderSidebar() {
+        const nav = document.getElementById("sidebarNav");
+        let html = "";
+
+        COURSE.forEach((section) => {
+          html += `
+            <div class="nav-section">
+                <div class="nav-group-header" onclick="toggleGroup('${section.id}')">
+                    <span class="group-arrow">▼</span>
+                    <span class="section-badge ${section.badgeClass}">${section.badge}</span>
+                    <span>${section.title}</span>
+                </div>
+                <div class="nav-group-items" id="group-${section.id}">
+                    ${section.children
+                      .map(
+                        (child) => `
+                        <div class="nav-item" data-path="${section.basePath}/${child.path}"
+                             onclick="navigateTo('${section.basePath}/${child.path}')">
+                            <span class="nav-num">${child.num}</span>
+                            <span class="nav-label">${child.title}</span>
+                        </div>
+                    `,
+                      )
+                      .join("")}
+                </div>
+            </div>`;
+        });
+
+        nav.innerHTML = html;
+      }
+
+      function toggleGroup(sectionId) {
+        const el = document.getElementById("group-" + sectionId);
+        const header = el.previousElementSibling;
+        el.classList.toggle("collapsed");
+        header.classList.toggle("collapsed");
+      }
+
+      // ===================== NAVIGATION =====================
+      function navigateTo(path) {
+        currentPath = path;
+        window.location.hash = "#" + path;
+
+        document.querySelectorAll(".nav-item").forEach((el) => {
+          el.classList.toggle("active", el.dataset.path === path);
+        });
+
+        loadMarkdown(path);
+        updateBreadcrumb(path);
+      }
+
+      function updateBreadcrumb(path) {
+        const bc = document.getElementById("breadcrumb");
+        if (!path) {
+          bc.innerHTML = "<span>Python AI 课程</span>";
+          return;
+        }
+
+        let sectionTitle = "";
+        let childTitle = "";
+        COURSE.forEach((section) => {
+          section.children.forEach((child) => {
+            if (section.basePath + "/" + child.path === path) {
+              sectionTitle = section.title;
+              childTitle = child.title;
+            }
+          });
+        });
+
+        bc.innerHTML = `
+            <span style="cursor:pointer" onclick="showWelcome()">Python AI 课程</span>
+            <span class="sep">›</span>
+            <span>${sectionTitle}</span>
+            <span class="sep">›</span>
+            <span class="current">${childTitle}</span>
+        `;
+      }
+
+      // ===================== LOAD MARKDOWN =====================
+      async function loadMarkdown(path) {
+        const content = document.getElementById("content");
+        content.innerHTML =
+          '<div class="loading"><div class="spinner"></div>加载中...</div>';
+
+        try {
+          const resp = await fetch("../" + path);
+          if (!resp.ok) throw new Error("文件未找到");
+          const text = await resp.text();
+
+          let html = marked.parse(text);
+
+          const idx = FLAT_NAV.findIndex((n) => n.fullPath === path);
+          let footerHtml = '<div class="nav-footer">';
+          if (idx > 0) {
+            footerHtml += `
+                    <a class="nav-footer-btn" onclick="navigateTo('${FLAT_NAV[idx - 1].fullPath}')">
+                        <div class="label">← 上一节</div>
+                        <div class="title">${FLAT_NAV[idx - 1].title}</div>
+                    </a>`;
+          }
+          if (idx < FLAT_NAV.length - 1) {
+            footerHtml += `
+                    <a class="nav-footer-btn next" onclick="navigateTo('${FLAT_NAV[idx + 1].fullPath}')">
+                        <div class="label">下一节 →</div>
+                        <div class="title">${FLAT_NAV[idx + 1].title}</div>
+                    </a>`;
+          }
+          footerHtml += "</div>";
+          html += footerHtml;
+
+          content.innerHTML = html;
+          content.parentElement.scrollTop = 0;
+
+          // 拦截 Markdown 中的相对链接，转为 navigateTo
+          const currentDir = path.substring(0, path.lastIndexOf("/") + 1);
+          content.querySelectorAll("a").forEach((a) => {
+            const href = a.getAttribute("href");
+            if (!href || href.startsWith("http") || href.startsWith("#"))
+              return;
+            let resolved = new URL(href, "http://dummy/" + currentDir).pathname;
+            if (resolved.startsWith("/")) resolved = resolved.substring(1);
+            a.href = "#" + resolved;
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              navigateTo(resolved);
+            });
+          });
+
+          content.querySelectorAll("pre code").forEach((block) => {
+            hljs.highlightElement(block);
+          });
+        } catch (err) {
+          content.innerHTML = `
+                <div class="error-state">
+                    <div class="error-icon">📄</div>
+                    <h3>无法加载文档</h3>
+                    <p>请确保通过 HTTP 服务器访问此页面（而非直接打开文件）</p>
+                    <p style="margin-top:12px;font-family:var(--font-mono);font-size:0.82rem;color:var(--accent)">
+                        python -m http.server 8080 --directory docs
+                    </p>
+                </div>`;
+        }
+      }
+
+      // ===================== WELCOME PAGE =====================
+      function showWelcome() {
+        currentPath = null;
+        window.location.hash = "";
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((el) => el.classList.remove("active"));
+        updateBreadcrumb(null);
+
+        const content = document.getElementById("content");
+        content.innerHTML = `
+        <div class="welcome">
+            <div class="welcome-hero">
+                <div class="welcome-icon">🐍</div>
+                <h1>Python AI 课程</h1>
+                <p>从零基础到实战的完整学习路径，涵盖基础语法、进阶特性和项目实战</p>
+            </div>
+            <div class="welcome-cards">
+                ${COURSE.map(
+                  (section) => `
+                    <div class="welcome-card" onclick="navigateTo('${section.basePath}/${section.children[0].path}')">
+                        <span class="card-badge ${section.badgeClass}">${section.badge}</span>
+                        <h3>${section.title}</h3>
+                        <p>${section.children.length} 个章节</p>
+                    </div>
+                `,
+                ).join("")}
+            </div>
+        </div>`;
+      }
+
+      // ===================== SIDEBAR TOGGLE =====================
+      function toggleSidebar() {
+        const sidebar = document.querySelector(".sidebar");
+        sidebar.style.display =
+          sidebar.style.display === "none" ? "flex" : "none";
+      }
+
+      // ===================== ROUTING =====================
+      function handleRoute() {
+        const hash = window.location.hash.slice(1);
+        if (hash) {
+          navigateTo(hash);
+        } else {
+          showWelcome();
+        }
+      }
+
+      // ===================== INIT =====================
+      renderSidebar();
+      handleRoute();
+      window.addEventListener("hashchange", handleRoute);
+    </script>
+  </body>
+</html>
