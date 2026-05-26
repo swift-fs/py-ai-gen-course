@@ -30,7 +30,7 @@ def test_do_float_sum():
         pytest.param(10, 20, 40, marks=pytest.mark.skip()),
     ],
 )
-def test_do_sum_manay(a, b, expected):
+def test_do_sum_many(a, b, expected):
     assert do_sum(a, b) == expected
 
 

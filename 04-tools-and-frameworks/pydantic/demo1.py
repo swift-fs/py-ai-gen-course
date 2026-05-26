@@ -16,7 +16,7 @@ class MyUser(BaseModel):
     @computed_field
     @property
     def description(self) -> str:
-        return f"用户 {self.name}，年龄{self.age}，邮箱{self.email}，是否管理员{self.is_admin}，，是否激活{self.is_active}"
+        return f"用户 {self.name}，年龄{self.age}，邮箱{self.email}，是否管理员{self.is_admin}，是否激活{self.is_active}"
 
 
 if __name__ == "__main__":
