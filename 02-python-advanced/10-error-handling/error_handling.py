@@ -36,12 +36,15 @@ for a, b in zip(test_values[::2], test_values[1::2]):
 # 3. raise
 # ============================
 print("\n=== raise ===")
+
+
 def set_age(age):
     if not isinstance(age, int):
         raise TypeError("年龄必须是整数")
     if age < 0 or age > 150:
         raise ValueError("年龄必须在 0-150 之间")
     return age
+
 
 for test_age in [25, -5, "二十"]:
     try:
@@ -54,18 +57,23 @@ for test_age in [25, -5, "二十"]:
 # 4. 自定义异常
 # ============================
 print("\n=== 自定义异常 ===")
+
+
 class ValidationError(Exception):
     def __init__(self, message, field):
         self.message = message
         self.field = field
         super().__init__(self.message)
+
     def __str__(self):
         return f"[{self.field}] {self.message}"
+
 
 def validate_email(email):
     if "@" not in email:
         raise ValidationError("邮箱格式不正确", "email")
     return email
+
 
 try:
     validate_email("invalid")

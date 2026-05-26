@@ -32,7 +32,9 @@ python-ai-course/
 │   ├── 02-todo-cli-app/           #   实战：CLI 待办应用
 │   └── 03-web-api/                #   实战：FastAPI Web API
 │
-└── 04-tools-and-frameworks/       # 工具与框架汇总
+└── 04-tools-and-frameworks/       # 工具与框架教程
+    ├── pydantic/                  #   Pydantic 数据验证
+    ├── fastapi/                   #   FastAPI Web 框架
     ├── package-managers.md        #   包管理器（uv, pip, poetry）
     ├── web-frameworks.md          #   Web 框架（FastAPI, Django, Flask）
     ├── database-tools.md          #   数据库（SQLAlchemy, SQLModel）

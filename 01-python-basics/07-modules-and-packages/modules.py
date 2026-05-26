@@ -75,3 +75,12 @@ if __name__ == "__main__":
     print(f"subtract(1,2) = {calculator.basic.subtract(1, 2)}")
     print(f"subtract(1,2) = {subtract(1, 2)}")
     print(f"power(2,3) = {calculator.advanced.power(2, 3)}")
+
+    # ============================
+    # 4. python -m 演示
+    # ============================
+    print("\n=== python -m 演示 ===")
+    print("  calculator 包有 __main__.py，所以可以这样运行：")
+    print("  python -m calculator add 3 5")
+    print("  python -m calculator power 2 10")
+    print(f"  __file__ = {__file__}")

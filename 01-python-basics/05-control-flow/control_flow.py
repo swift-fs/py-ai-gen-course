@@ -81,7 +81,7 @@ else:
 # 6. 列表推导式（结合控制流）
 # ============================
 print("\n=== 列表推导式 ===")
-squares = [x ** 2 for x in range(1, 6)]
+squares = [x**2 for x in range(1, 6)]
 print(f"  平方: {squares}")
 evens = [x for x in range(1, 11) if x % 2 == 0]
 print(f"  偶数: {evens}")

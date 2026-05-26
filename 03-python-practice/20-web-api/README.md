@@ -42,6 +42,8 @@ def health():
 uvicorn app.main:app --reload
 ```
 
+> 💡 `uvicorn` 是 ASGI 服务器，负责接收 HTTP 请求并转交给 FastAPI 处理。详细用法请阅读 [Uvicorn：Python ASGI 服务器](../../04-tools-and-frameworks/uvicorn/README.md)。
+
 访问：
 - http://127.0.0.1:8000 —— API
 - http://127.0.0.1:8000/docs —— Swagger 文档
@@ -145,14 +147,14 @@ curl -X DELETE http://localhost:8000/todos/1
 
 ## 本章小结
 
-| 概念 | 说明 |
-|------|------|
-| `FastAPI()` | 创建应用 |
-| `@app.get/post/put/delete` | 定义路由 |
-| `BaseModel` | Pydantic 数据验证 |
-| `HTTPException` | 返回错误响应 |
-| `/docs` | 自动生成的 API 文档 |
-| `uvicorn` | ASGI 服务器 |
+| 概念                       | 说明                |
+| -------------------------- | ------------------- |
+| `FastAPI()`                | 创建应用            |
+| `@app.get/post/put/delete` | 定义路由            |
+| `BaseModel`                | Pydantic 数据验证   |
+| `HTTPException`            | 返回错误响应        |
+| `/docs`                    | 自动生成的 API 文档 |
+| `uvicorn`                  | ASGI 服务器         |
 
 ---
 

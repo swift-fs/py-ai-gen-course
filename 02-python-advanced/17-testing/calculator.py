@@ -2,13 +2,16 @@
 # 运行方式：python calculator.py（手动验证）
 #           uv run pytest test_calculator.py -v（pytest 测试）
 
+
 def add(a, b):
     return a + b
+
 
 def divide(a, b):
     if b == 0:
         raise ValueError("除数不能为零")
     return a / b
+
 
 if __name__ == "__main__":
     print("=== 手动验证 ===")

@@ -17,13 +17,17 @@ print(f"  {name}, {age}岁, {height}m")
 # 2. 函数注解
 # ============================
 print("\n=== 函数注解 ===")
+
+
 def add(a: int, b: int) -> int:
     return a + b
+
 
 def greet(name: str, formal: bool = False) -> str:
     if formal:
         return f"尊敬的{name}，您好"
     return f"你好，{name}"
+
 
 print(f"  add(3, 5) = {add(3, 5)}")
 print(f"  {greet('小明')}")
@@ -33,9 +37,12 @@ print(f"  {greet('小明', formal=True)}")
 # 3. Optional
 # ============================
 print("\n=== Optional ===")
+
+
 def find_user(user_id: int) -> Optional[str]:
     users = {1: "小明", 2: "小红"}
     return users.get(user_id)
+
 
 for uid in [1, 3]:
     user = find_user(uid)
@@ -48,6 +55,8 @@ for uid in [1, 3]:
 # 4. dataclass + 类型注解
 # ============================
 print("\n=== dataclass + 类型注解 ===")
+
+
 @dataclass
 class Student:
     name: str
@@ -57,6 +66,7 @@ class Student:
 
     def average(self) -> float:
         return sum(self.scores) / len(self.scores)
+
 
 s = Student("小明", 18, [88.0, 92.0, 85.0], "xm@example.com")
 print(f"  {s.name}: 平均分 {s.average():.1f}, 邮箱 {s.email}")

@@ -50,8 +50,7 @@ students = [
 
 json_path = Path("test_students.json")
 json_path.write_text(
-    json.dumps(students, ensure_ascii=False, indent=2),
-    encoding="utf-8"
+    json.dumps(students, ensure_ascii=False, indent=2), encoding="utf-8"
 )
 
 loaded = json.loads(json_path.read_text(encoding="utf-8"))

@@ -3,10 +3,17 @@ name = "python-ai-course"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = []
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.136.1",
+    "gunicorn>=26.0.0",
+    "pydantic>=2.13.4",
+    "uvicorn>=0.47.0",
+]
 
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.15.14",
 ]

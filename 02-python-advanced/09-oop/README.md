@@ -159,24 +159,80 @@ print(v1 == v2)      # False
 
 ### 常用魔术方法速查
 
-| 方法 | 触发操作 | 示例 |
-|------|---------|------|
-| `__init__` | 创建对象 | `obj = MyClass()` |
-| `__str__` | `print(obj)` | 用户友好的字符串 |
-| `__repr__` | `repr(obj)` | 调试用的字符串 |
-| `__len__` | `len(obj)` | 返回长度 |
-| `__add__` | `obj1 + obj2` | 加法 |
-| `__eq__` | `obj1 == obj2` | 相等比较 |
-| `__lt__` | `obj1 < obj2` | 小于比较 |
-| `__getitem__` | `obj[key]` | 索引访问 |
-| `__setitem__` | `obj[key] = val` | 索引赋值 |
-| `__contains__` | `val in obj` | 成员判断 |
-| `__iter__` | `for x in obj` | 迭代 |
-| `__call__` | `obj()` | 像函数一样调用 |
+| 方法           | 触发操作         | 示例              |
+| -------------- | ---------------- | ----------------- |
+| `__init__`     | 创建对象         | `obj = MyClass()` |
+| `__str__`      | `print(obj)`     | 用户友好的字符串  |
+| `__repr__`     | `repr(obj)`      | 调试用的字符串    |
+| `__len__`      | `len(obj)`       | 返回长度          |
+| `__add__`      | `obj1 + obj2`    | 加法              |
+| `__eq__`       | `obj1 == obj2`   | 相等比较          |
+| `__lt__`       | `obj1 < obj2`    | 小于比较          |
+| `__getitem__`  | `obj[key]`       | 索引访问          |
+| `__setitem__`  | `obj[key] = val` | 索引赋值          |
+| `__contains__` | `val in obj`     | 成员判断          |
+| `__iter__`     | `for x in obj`   | 迭代              |
+| `__call__`     | `obj()`          | 像函数一样调用    |
 
 ---
 
 ## 4. dataclass —— 自动生成样板代码
+
+### 4.1 为什么要用 dataclass？
+
+先看一个问题：用普通 class 定义一个"学生"，你需要写多少代码？
+
+```python
+# 😫 传统写法：手写一堆"样板代码"
+class Student:
+    def __init__(self, name, age, score):
+        self.name = name
+        self.age = age
+        self.score = score
+
+    def __repr__(self):              # 为了 print 能好看
+        return f"Student(name={self.name!r}, age={self.age}, score={self.score})"
+
+    def __eq__(self, other):         # 为了能用 == 比较
+        if not isinstance(other, Student):
+            return False
+        return self.name == other.name and self.age == other.age and self.score == other.score
+
+s1 = Student("小明", 18, 88.5)
+print(s1)              # Student(name='小明', age=18, score=88.5)
+print(s1 == Student("小明", 18, 88.5))   # True
+```
+
+上面这些 `__init__`、`__repr__`、`__eq__` 都是"样板代码"——每个类都要写，但内容几乎一样，枯燥又容易出错。
+
+**dataclass 就是帮你自动写这些样板代码的！** 同样的效果，只需要：
+
+```python
+# 😄 dataclass 写法：简洁多了！
+from dataclasses import dataclass
+
+@dataclass                    # 这个 @ 装饰器告诉 Python："帮我自动生成样板代码"
+class Student:
+    name: str                 # 字段名: 类型（类型注解，告诉 Python 这个字段存什么）
+    age: int
+    score: float
+
+s1 = Student("小明", 18, 88.5)
+print(s1)                     # Student(name='小明', age=18, score=88.5)  ← 自动生成了 __repr__
+print(s1 == Student("小明", 18, 88.5))   # True  ← 自动生成了 __eq__
+```
+
+> **一句话理解**：`@dataclass` 就像一个"代码生成器"，你只写字段定义，它帮你自动生成 `__init__`、`__repr__`、`__eq__` 等方法。
+
+### 4.2 dataclass 自动帮我们做了什么？
+
+| 自动生成的方法 | 作用                      | 没有它会怎样                       |
+| -------------- | ------------------------- | ---------------------------------- |
+| `__init__`     | 创建对象时初始化字段      | 你得手写 `def __init__(self, ...)` |
+| `__repr__`     | `print(obj)` 显示友好信息 | 只显示 `<Student object at 0x...>` |
+| `__eq__`       | 用 `==` 比较两个对象      | 比较的是内存地址，永远不相等       |
+
+### 4.3 基础用法：带默认值
 
 ```python
 from dataclasses import dataclass
@@ -185,38 +241,120 @@ from dataclasses import dataclass
 class Student:
     name: str
     age: int
-    score: float = 0.0    # 默认值
+    score: float = 0.0       # 有默认值的字段必须放在没有默认值的字段后面
 
     def is_passed(self):
+        """dataclass 里也能写普通方法"""
         return self.score >= 60
 
-# 自动生成 __init__, __repr__, __eq__
 s1 = Student("小明", 18, 88.5)
-s2 = Student("小红", 17, 92.0)
+s2 = Student("小红", 17)      # score 使用默认值 0.0
 
-print(s1)                  # Student(name='小明', age=18, score=88.5)
-print(s1.is_passed())      # True
-print(s1 == s2)            # False（自动比较所有字段）
+print(s1)                     # Student(name='小明', age=18, score=88.5)
+print(s1.is_passed())         # True
+print(s2.is_passed())         # False
 ```
 
-### dataclass 进阶
+### 4.4 可变默认值 —— 用 field(default_factory=...)
+
+```python
+from dataclasses import dataclass, field
+
+# ❌ 错误写法：直接用 list 作为默认值
+# @dataclass
+# class ClassRoom:
+#     students: list = []        # 所有实例会共享同一个列表！这是 Python 的经典坑
+
+# ✅ 正确写法：用 field(default_factory=list)
+@dataclass
+class ClassRoom:
+    name: str
+    students: list = field(default_factory=list)   # 每个实例创建一个新列表
+
+    def add_student(self, student_name):
+        self.students.append(student_name)
+
+room1 = ClassRoom("三年二班")
+room1.add_student("小明")
+room1.add_student("小红")
+
+room2 = ClassRoom("四年一班")
+room2.add_student("小刚")
+
+print(room1.students)    # ['小明', '小红']   ← 只有 room1 的学生
+print(room2.students)    # ['小刚']           ← 只有 room2 的学生
+```
+
+> **记忆技巧**：`default_factory=list` 就是"每次创建新对象时，调用 `list()` 生成一个新列表"。同理，`default_factory=dict` 就是生成一个新字典。
+
+### 4.5 实战案例：商品购物车
 
 ```python
 from dataclasses import dataclass, field
 
 @dataclass
-class ClassRoom:
+class Product:
+    """商品"""
     name: str
-    students: list = field(default_factory=list)  # 可变默认值
+    price: float
+    quantity: int = 1
 
-    def add_student(self, student):
-        self.students.append(student)
+    @property
+    def total(self):
+        """小计金额"""
+        return self.price * self.quantity
 
-room = ClassRoom("三年二班")
-room.add_student("小明")
-room.add_student("小红")
-print(room.students)    # ['小明', '小红']
+@dataclass
+class ShoppingCart:
+    """购物车"""
+    items: list = field(default_factory=list)
+
+    def add_item(self, product: Product):
+        self.items.append(product)
+
+    @property
+    def total_price(self):
+        return sum(item.total for item in self.items)
+
+cart = ShoppingCart()
+cart.add_item(Product("Python编程书", 59.8, 2))
+cart.add_item(Product("机械键盘", 299.0))
+cart.add_item(Product("鼠标垫", 19.9, 3))
+
+for item in cart.items:
+    print(f"  {item.name} x{item.quantity} = ¥{item.total:.2f}")
+print(f"  总计: ¥{cart.total_price:.2f}")
 ```
+
+### 4.6 dataclass 的继承
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Person:
+    name: str
+    age: int
+
+@dataclass
+class Employee(Person):       # 继承 Person
+    department: str
+    salary: float = 0.0
+
+e = Employee("小明", 25, "技术部", 15000)
+print(e)    # Employee(name='小明', age=25, department='技术部', salary=15000)
+```
+
+### 4.7 什么时候用 dataclass？什么时候用普通 class？
+
+| 场景                                     | 推荐          | 原因                                 |
+| ---------------------------------------- | ------------- | ------------------------------------ |
+| 主要用来**存数据**（如学生、商品、订单） | ✅ dataclass   | 字段多，自动生成代码省事             |
+| 有很多**复杂方法**和**内部状态**         | 普通类        | dataclass 更适合数据容器             |
+| 需要用 `__add__`、`__len__` 等魔术方法   | 普通类        | dataclass 主要生成 init/repr/eq      |
+| 数据需要**验证**或**转换**               | 考虑 Pydantic | Pydantic 在 dataclass 基础上加了验证 |
+
+> **简单原则**：如果一个类"主要是装数据的"，用 dataclass 就对了！
 
 ---
 
@@ -333,19 +471,19 @@ class MyClass:
 
 ## 本章小结
 
-| 概念 | 说明 | 示例 |
-|------|------|------|
-| `class` | 定义类 | `class Dog:` |
-| `__init__` | 初始化方法 | `def __init__(self, name):` |
-| `self` | 实例自身 | `self.name = name` |
-| 继承 | 子类继承父类 | `class Cat(Animal):` |
-| `super()` | 调用父类方法 | `super().__init__()` |
-| `@dataclass` | 自动生成样板代码 | `@dataclass class Student:` |
-| `__str__` | print 显示 | `def __str__(self):` |
-| `__add__` | + 运算 | `def __add__(self, other):` |
-| `@property` | 方法变属性 | `c.area` 不用括号 |
-| `@staticmethod` | 静态方法 | 不需要 self |
-| `@classmethod` | 类方法 | 第一个参数是 cls |
+| 概念            | 说明             | 示例                        |
+| --------------- | ---------------- | --------------------------- |
+| `class`         | 定义类           | `class Dog:`                |
+| `__init__`      | 初始化方法       | `def __init__(self, name):` |
+| `self`          | 实例自身         | `self.name = name`          |
+| 继承            | 子类继承父类     | `class Cat(Animal):`        |
+| `super()`       | 调用父类方法     | `super().__init__()`        |
+| `@dataclass`    | 自动生成样板代码 | `@dataclass class Student:` |
+| `__str__`       | print 显示       | `def __str__(self):`        |
+| `__add__`       | + 运算           | `def __add__(self, other):` |
+| `@property`     | 方法变属性       | `c.area` 不用括号           |
+| `@staticmethod` | 静态方法         | 不需要 self                 |
+| `@classmethod`  | 类方法           | 第一个参数是 cls            |
 
 ---
 

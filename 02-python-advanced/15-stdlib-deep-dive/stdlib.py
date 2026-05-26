@@ -51,19 +51,23 @@ print("\n=== functools ===")
 numbers = [1, 2, 3, 4, 5]
 print(f"  reduce求和: {reduce(lambda a, b: a + b, numbers)}")
 
+
 def power(base, exponent):
-    return base ** exponent
+    return base**exponent
+
 
 square = partial(power, exponent=2)
 cube = partial(power, exponent=3)
 print(f"  square(5) = {square(5)}")
 print(f"  cube(3) = {cube(3)}")
 
+
 @lru_cache(maxsize=128)
 def fibonacci(n):
     if n <= 1:
         return n
     return fibonacci(n - 1) + fibonacci(n - 2)
+
 
 print(f"  fib(30) = {fibonacci(30)}")
 print(f"  缓存: {fibonacci.cache_info()}")

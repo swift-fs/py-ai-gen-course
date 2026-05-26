@@ -254,7 +254,92 @@ from ..other import func     # .. 表示上一级包
 
 ---
 
-## 7. 常见的坑
+## 7. `python -m` 运行模块与包
+
+### 用 `-m` 运行标准库模块
+
+`python -m` 的意思是**把模块当脚本运行**。你已经知道 `python hello.py` 是直接运行一个文件，而 `-m` 是通过**模块名**来运行：
+
+```powershell
+# 格式化 JSON（把 stdin 或文件内容格式化输出）
+echo '{"name":"小明"}' | python -m json.tool
+
+# 启动一个简易 HTTP 服务器（在当前目录提供文件下载）
+python -m http.server 8000
+
+# 运行测试
+python -m pytest
+```
+
+这些标准库模块本来只能被 `import`，加了 `-m` 就能直接当命令行工具用了。
+
+### `__main__.py` —— 包的入口文件
+
+单文件模块可以用 `if __name__ == "__main__"` 来区分直接运行和被导入。**包**也可以直接运行，秘密就是 `__main__.py`：
+
+```
+calculator/
+├── __init__.py       # 包标识
+├── __main__.py       # python -m calculator 时执行这个文件
+├── basic.py
+└── advanced.py
+```
+
+```python
+# calculator/__main__.py
+from calculator import add, subtract, power
+import sys
+
+if len(sys.argv) < 4:
+    print("用法: python -m calculator <操作> <a> <b>")
+    print("操作: add / subtract / power")
+    sys.exit(1)
+
+operation = sys.argv[1]
+a, b = int(sys.argv[2]), int(sys.argv[3])
+
+if operation == "add":
+    print(f"{a} + {b} = {add(a, b)}")
+elif operation == "subtract":
+    print(f"{a} - {b} = {subtract(a, b)}")
+elif operation == "power":
+    print(f"{a} ^ {b} = {power(a, b)}")
+else:
+    print(f"未知操作: {operation}")
+```
+
+运行方式：
+
+```powershell
+# 在 07-modules-and-packages 目录下执行
+python -m calculator add 3 5        # 3 + 5 = 8
+python -m calculator power 2 10     # 2 ^ 10 = 1024
+```
+
+### `-m` 与直接运行的区别
+
+| 方式         | 命令                            | `__name__`   | 模块搜索路径     |
+| ------------ | ------------------------------- | ------------ | ---------------- |
+| 直接运行文件 | `python calculator/__main__.py` | `"__main__"` | 文件所在目录     |
+| 用 `-m` 运行 | `python -m calculator`          | `"__main__"` | **当前工作目录** |
+
+关键区别在于 **模块搜索路径**：
+
+```powershell
+# ❌ 直接运行——Python 把 calculator/ 加入搜索路径
+#    此时 import basic 可以，但 import calculator 会失败
+python calculator/__main__.py
+
+# ✅ 用 -m——Python 把当前目录（07-modules-and-packages/）加入搜索路径
+#    import calculator 正常工作，包内的相对导入也正确
+python -m calculator
+```
+
+> **建议**：运行包时始终使用 `python -m 包名`，不要直接运行包内的文件。
+
+---
+
+## 8. 常见的坑
 
 ### 循环导入
 
@@ -297,18 +382,83 @@ python main.py
 
 ---
 
+## 9. Python 特殊文件一览
+
+Python 有一系列以双下划线命名（俗称 **dunder**，double underscore）的特殊文件和变量，它们各有约定俗成的用途：
+
+### 模块与包相关
+
+| 名称          | 类型 | 作用                                                             |
+| ------------- | ---- | ---------------------------------------------------------------- |
+| `__init__.py` | 文件 | 标记目录为 Python 包。可以为空，也可以放包的初始化代码和导入转发 |
+| `__main__.py` | 文件 | 包的入口文件。`python -m 包名` 时执行此文件                      |
+| `__all__`     | 变量 | 列表，控制 `from xxx import *` 的导出范围                        |
+| `__name__`    | 变量 | 模块名。直接运行时为 `"__main__"`，被导入时为模块的完整路径名    |
+| `__version__` | 变量 | 版本号约定（如 `"1.0.0"`）。非强制，但几乎所有第三方库都用它     |
+| `__file__`    | 变量 | 当前模块文件的绝对路径。调试时常用：`print(__file__)`            |
+
+### 运行时相关
+
+| 名称           | 说明                                                                                                              |
+| -------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `__pycache__/` | 目录，存放 Python 编译后的字节码文件（`.pyc`）。首次导入时自动生成，加速后续导入。可以安全删除，Python 会重新生成 |
+| `__doc__`      | 模块、类、函数的文档字符串（docstring）。`help()` 函数就是读取它                                                  |
+
+### 项目配置相关
+
+这些不是双下划线命名，但同样是 Python 生态中的约定性文件：
+
+| 文件              | 作用                                                                               |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| `pyproject.toml`  | 项目核心配置文件。定义元数据、依赖、构建系统、工具配置等（现代 Python 项目的标准） |
+| `py.typed`        | 空文件，放在包根目录。告诉类型检查器（mypy 等）这个包自带类型注解                  |
+| `.python-version` | 固定项目使用的 Python 版本（如 `3.12`）。uv、pyenv 等工具会读取它                  |
+| `conftest.py`     | pytest 的共享配置文件。放在项目根目录或测试目录中，定义全局的 fixture              |
+
+### 命名约定
+
+Python 社区有一些广泛遵循的命名约定：
+
+```python
+# _ 单下划线开头：内部使用，不建议外部调用（但不会阻止）
+def _internal_helper():
+    pass
+
+# __ 双下划线开头（不在尾部的）：触发名称改写（name mangling）
+class MyClass:
+    def __init__(self):
+        self.__private = 42    # 实际名称变为 _MyClass__private
+
+# __xx__ 双下划线包围：Python 保留的特殊方法/属性（魔术方法）
+def __init__(self):     # 构造函数
+def __str__(self):      # print() 时调用
+def __repr__(self):     # 调试时显示
+def __len__(self):      # len() 时调用
+```
+
+> **规则**：不要自己发明 `__xx__` 形式的名称，这是 Python 留给自己用的。
+
+---
+
 ## 本章小结
 
-| 概念 | 说明 |
-|------|------|
-| `import 模块` | 导入整个模块 |
-| `from 模块 import 名称` | 导入特定功能 |
-| `as` | 重命名 |
-| `if __name__ == "__main__"` | 区分直接运行和被导入 |
-| 包 | 文件夹 + `__init__.py` |
-| `__all__` | 控制 `import *` 的导出范围 |
-| 绝对导入 | `from pkg.module import fn`（推荐） |
-| 相对导入 | `from .module import fn` |
+| 概念                        | 说明                                     |
+| --------------------------- | ---------------------------------------- |
+| `import 模块`               | 导入整个模块                             |
+| `from 模块 import 名称`     | 导入特定功能                             |
+| `as`                        | 重命名                                   |
+| `if __name__ == "__main__"` | 区分直接运行和被导入                     |
+| 包                          | 文件夹 + `__init__.py`                   |
+| `__all__`                   | 控制 `import *` 的导出范围               |
+| 绝对导入                    | `from pkg.module import fn`（推荐）      |
+| 相对导入                    | `from .module import fn`                 |
+| `python -m 包名`            | 以模块方式运行，执行包内的 `__main__.py` |
+| `__main__.py`               | 包的入口文件                             |
+| `__pycache__/`              | 字节码缓存目录                           |
+| `__version__`               | 版本号约定                               |
+| `__file__`                  | 模块文件路径                             |
+| `__doc__`                   | 文档字符串                               |
+| `_` / `__xx__`              | 命名约定（内部使用 / 魔术方法）          |
 
 ---
 
