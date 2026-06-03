@@ -64,6 +64,8 @@ random.shuffle(items)             # 打乱顺序
 print(items)
 ```
 
+📖 **详细教程**：[random 标准库教程](./random-stdlib.md) —— 随机数生成、随机选择、权重抽样、种子控制等
+
 ### math —— 数学
 
 ```python
@@ -74,6 +76,8 @@ print(math.sqrt(16))   # 4.0
 print(math.ceil(3.2))  # 4（向上取整）
 print(math.floor(3.8)) # 3（向下取整）
 ```
+
+📖 **详细教程**：[math 标准库教程](./math-stdlib.md) —— 取整、幂运算、三角函数、排列组合等
 
 ### datetime —— 日期时间
 
@@ -91,6 +95,8 @@ print(f"明天: {tomorrow.strftime('%Y-%m-%d')}")
 date = datetime.strptime("2024-06-01", "%Y-%m-%d")
 ```
 
+📖 **详细教程**：[datetime 标准库教程](./datetime-stdlib.md) —— 日期创建、格式化、解析、时区处理、时间计算等
+
 ### pathlib —— 路径操作
 
 ```python
@@ -103,6 +109,8 @@ config = current / "config" / "settings.json"    # 路径拼接
 print(f"配置路径: {config}")
 print(f"是否存在: {current.exists()}")
 ```
+
+📖 **详细教程**：[pathlib 标准库教程](./pathlib-stdlib.md) —— 路径拼接、文件读写、目录遍历、glob 模式匹配等
 
 ### json —— JSON 数据
 
@@ -118,6 +126,8 @@ print(text)
 parsed = json.loads(text)
 print(parsed["name"])
 ```
+
+📖 **详细教程**：[json 标准库教程](./json-stdlib.md) —— JSON 读写、序列化陷阱、自定义编解码等
 
 ---
 
